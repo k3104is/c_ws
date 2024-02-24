@@ -13,8 +13,8 @@ int main()
   for(int i = 0; i < 10; i++)
   {
     myid = omp_get_thread_num();
-    printf("hello:%d, thread:%d\n", i, myid);
     sleep(1);
+    printf("hello:%d, thread:%d\n", i, myid);
   }
 
   return 0;
