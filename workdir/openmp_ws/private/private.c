@@ -8,13 +8,12 @@ int main()
     int tmp;
 
     #pragma omp parallel for
-    // #pragma omp parallel for private(tmp, j)
+    // #pragma omp parallel for private(j)
     for(i = 0; i < 9; i++)
     {
-        tmp = a[i];
         for(j = 0; j < 9; j++)
         {
-            printf("%d * %d = %d\n", tmp, b[j], (tmp * b[j]));
+            printf("%d * %d = %d\n", a[i], b[j], (a[i] * b[j]));
         }
     }
     return 0;
