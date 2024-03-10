@@ -29,7 +29,13 @@ int main()
   /* calc */
   clock_gettime(CLOCK_REALTIME, &ts);
   t1 = TS_TO_VAL(ts);
+#ifndef OPENACC
 #pragma omp parallel for private(i, j, k) shared(C)
+#else
+#pragma acc data copyin(A, B), copy(C)
+#pragma acc kernels
+#pragma acc loop
+#endif
   for(i = 0; i < N; i++)
   {
     for(j = 0; j < N; j++)
