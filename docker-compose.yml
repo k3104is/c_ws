@@ -1,0 +1,9 @@
+services:
+  c_ws:
+    build: .
+    image: 'i_c_ws'
+    container_name: 'c_c_ws'
+    working_dir: '/workdir'
+    tty: true
+    volumes:
+      - ./workdir:/workdir
