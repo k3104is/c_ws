@@ -3,7 +3,8 @@
 #include "tm.h"
 // #include <sys/time.h>
 
-#define CAL_ELAPSED(end, start) (end.tv_sec - start.tv_sec), (end.tv_nsec - start.tv_nsec)
+#define CAL_ELAPSED(end, start) (double)( (double)(end.tv_sec   + (double)end.tv_nsec   * 1e-9) \
+                                        - (double)(start.tv_sec + (double)start.tv_nsec * 1e-9))
 
 void Tm_GetElapsedTime(void (*func)(void))
 {
@@ -14,6 +15,6 @@ void Tm_GetElapsedTime(void (*func)(void))
   func();
   clock_gettime(CLOCK_MONOTONIC, &end);
   
-  printf("elapsed:%10ld.%09ld\n", CAL_ELAPSED(end, start));
+  printf("elapsed:%10.9lf\n", CAL_ELAPSED(end, start));
 
 }
