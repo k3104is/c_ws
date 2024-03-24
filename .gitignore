@@ -1,4 +1,10 @@
 *
 !*/
 !*.*
+
 !Dockerfile
+!Makefile
+settings.json
+*.o
+*.d
+*.out
