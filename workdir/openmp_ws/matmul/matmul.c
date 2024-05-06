@@ -7,17 +7,20 @@
 #define TS_TO_VAL(ts) ((double)ts.tv_sec + (double)(ts.tv_nsec * 1.e-9))
 #define RAND_LIMIT 100
 #define IBL 16
+#define TRIAL_CNT 5
 
 int main()
 {
   int A[N][N], B[N][N], C[N][N];
   int da0, da1, db0, db1, dc00, dc01, dc10, dc11;
-  int i, j, k, ib, jb, kb;
-  struct timespec ts[3];
-  double t[3];
+  int i, j, k, ib, jb, kb, i1, i2, i3, j1, j2, j3;
+  int cnt;
+  struct timespec ts0, ts1;
+  double sum = 0;
 
+  for(cnt = 0; cnt < TRIAL_CNT; cnt++)
+  {
   /* init */
-  clock_gettime(CLOCK_REALTIME, &ts[0]);
   for(i = 0; i < N; i++)
   {
     for(j = 0; j < N; j++)
@@ -29,19 +32,40 @@ int main()
   }
 
   /* calc */
-  clock_gettime(CLOCK_REALTIME, &ts[1]);
+  clock_gettime(CLOCK_REALTIME, &ts0);
 #if defined(LOOP_UNROLLING)
-#if 0
-  for(i = 0; i < N; i+=2)
+#if 1
+  for(i = 0; i < N; i+=4)
   {
-    for(j = 0; j < N; j+=2)
+    i1 = i + 1;
+    i2 = i + 2;
+    i3 = i + 3;
+    for(j = 0; j < N; j+=4)
     {
+      j1 = j + 1;
+      j2 = j + 2;
+      j3 = j + 3;
       for(k = 0; k < N; k++)
       {
-        C[i  ][j  ] += A[i  ][k] * B[k][j  ];
-        C[i  ][j+1] += A[i  ][k] * B[k][j+1];
-        C[i+1][j  ] += A[i+1][k] * B[k][j  ];
-        C[i+1][j+1] += A[i+1][k] * B[k][j+1];
+        C[i ][j ] += A[i ][k] * B[k][j ];
+        C[i ][j1] += A[i ][k] * B[k][j1];
+        C[i ][j2] += A[i ][k] * B[k][j2];
+        C[i ][j3] += A[i ][k] * B[k][j3];
+
+        C[i1][j ] += A[i1][k] * B[k][j ];
+        C[i1][j1] += A[i1][k] * B[k][j1];
+        C[i1][j2] += A[i1][k] * B[k][j2];
+        C[i1][j3] += A[i1][k] * B[k][j3];
+
+        C[i2][j ] += A[i2][k] * B[k][j ];
+        C[i2][j1] += A[i2][k] * B[k][j1];
+        C[i2][j2] += A[i2][k] * B[k][j2];
+        C[i2][j3] += A[i2][k] * B[k][j3];
+
+        C[i3][j ] += A[i3][k] * B[k][j ];
+        C[i3][j1] += A[i3][k] * B[k][j1];
+        C[i3][j2] += A[i3][k] * B[k][j2];
+        C[i3][j3] += A[i3][k] * B[k][j3];
       }
     }
   }
@@ -122,14 +146,8 @@ int main()
 #endif  /* defined(OPENMP) || defined(OPENACC) */
 
   /* end */
-  clock_gettime(CLOCK_REALTIME, &ts[2]);
-  t[0] = TS_TO_VAL(ts[0]);
-  t[1] = TS_TO_VAL(ts[1]);
-  t[2] = TS_TO_VAL(ts[2]);
-  printf("init\t= %f \n", t[1] - t[0]);
-  printf("calc\t= %f \n", t[2] - t[1]);
-  printf("total\t= %f \n", t[2] - t[0]);
-
+  clock_gettime(CLOCK_REALTIME, &ts1);
+  sum += TS_TO_VAL(ts1) - TS_TO_VAL(ts0);
   for(i = 0; i < N; i++)
   {
     for(j = 0; j < N; j++)
@@ -141,5 +159,7 @@ int main()
       }
     }
   }
+  }
+  printf("calc\t= %f [s]\n", sum);
   return 0;
 }
