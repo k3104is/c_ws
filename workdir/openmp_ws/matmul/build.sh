@@ -5,3 +5,4 @@ gcc -DNORMAL -O2 -o o2 matmul.c
 gcc -DLOOP_UNROLLING -O2 -o loop_unrolling matmul.c
 gcc -DBLOCKING -O2 -o blocking matmul.c
 gcc -DOPENMP -fopenmp -O2 -o openmp matmul.c
+gcc -DLOOP_UNROLLING_AND_BLOCKING -O2 -o loop_unrolling_and_blocking matmul.c
